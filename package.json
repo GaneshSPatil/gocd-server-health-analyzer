@@ -1,0 +1,20 @@
+{
+  "name": "gocd-server-health-analyzer",
+  "version": "0.0.0",
+  "description": "a simple GoCD server health analysis tool.",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/.bin/eslint assertArrays.js test && ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --recursive"
+  },
+  "engines": {
+    "node": ">=6.9.3"
+  },
+  "author": "Ganesh Patil",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "eslint": "^4.3.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.5.0"
+  }
+}
