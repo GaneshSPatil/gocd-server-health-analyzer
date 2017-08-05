@@ -16,5 +16,9 @@
     "eslint": "^4.3.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.5.0"
+  },
+  "dependencies": {
+    "nedb": "^1.8.0",
+    "winston": "^2.3.1"
   }
 }
