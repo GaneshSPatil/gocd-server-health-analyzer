@@ -4,7 +4,7 @@
   "description": "a simple GoCD server health analysis tool.",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/.bin/eslint assertArrays.js test && ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --recursive"
+    "test": "./node_modules/.bin/eslint server.js lib test && ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --recursive"
   },
   "engines": {
     "node": ">=6.9.3"
