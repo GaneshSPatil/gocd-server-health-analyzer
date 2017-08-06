@@ -34,7 +34,7 @@ describe('Data Access Service', () => {
       dataAccessService.saveSupportLogs(logsJSON);
 
       expect(stubbedFs.writeFile.getCall(0).args[0]).to.equal(expectedFilePath);
-      expect(stubbedFs.writeFile.getCall(0).args[1]).to.equal(logsJSON);
+      expect(stubbedFs.writeFile.getCall(0).args[1]).to.equal(JSON.stringify(logsJSON));
     });
 
     it('should log the status of save log operation', () => {

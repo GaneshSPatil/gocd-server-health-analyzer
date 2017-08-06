@@ -20,17 +20,19 @@ stubbedRequires.path = stubbedPath;
 const setup = proxyquire(path.resolve('lib/services/setupService'), stubbedRequires);
 
 describe('Setup Service', () => {
+  beforeEach(() => {
+    stubbedFs.existsSync.returns(true);
+    stubbedFs.readdirSync.returns([]);
+  });
+
+  afterEach(() => {
+    stubbedFs.existsSync.reset();
+    stubbedFs.rmdirSync.reset();
+    stubbedFs.unlinkSync.reset();
+    stubbedFs.readdirSync.reset();
+  });
+
   describe('clean', () => {
-    beforeEach(() => {
-      stubbedFs.existsSync.returns(true);
-      stubbedFs.readdirSync.returns([]);
-    });
-
-    afterEach(() => {
-      stubbedFs.existsSync.reset();
-      stubbedFs.readdirSync.reset();
-    });
-
     it('should clean app specific folders', () => {
       const dataFolderPath = path.resolve('data/');
       const logsFolderPath = path.resolve('logs/');
@@ -47,6 +49,29 @@ describe('Setup Service', () => {
       expect(stubbedFs.rmdirSync.getCall(0).args[0]).to.equal(dataFolderPath);
       expect(stubbedFs.rmdirSync.getCall(1).args[0]).to.equal(logsFolderPath);
       expect(stubbedFs.rmdirSync.getCall(2).args[0]).to.equal(dbFolderPath);
+    });
+
+    it('should clean folders recursively', () => {
+      const dataFolderPath = path.resolve('data/');
+      const fileName = 'some-file';
+      const folderName = 'recursive-folder';
+
+      stubbedFs.lstatSync.onCall(0).returns({'isDirectory': () => false});
+      stubbedFs.lstatSync.onCall(1).returns({'isDirectory': () => true});
+      stubbedFs.readdirSync.onCall(0).returns([fileName, folderName]);
+      stubbedFs.readdirSync.onCall(1).returns([]);
+      setup.clean();
+
+      expect(stubbedFs.unlinkSync.getCall(0).args[0]).to.equal(`${dataFolderPath}/${fileName}`);
+
+      expect(stubbedFs.rmdirSync.getCall(0).args[0]).to.contains(folderName);
+      expect(stubbedFs.rmdirSync.getCall(1).args[0]).to.equal(dataFolderPath);
+    });
+
+    it('should not clean when folders doesnt exists', () => {
+      stubbedFs.existsSync.returns(false);
+      setup.clean();
+      expect(stubbedFs.rmdirSync.callCount).to.equal(0);
     });
 
     it('should unset environment variables', () => {
@@ -74,9 +99,9 @@ describe('Setup Service', () => {
       setup.prepare();
       expect(stubbedFs.mkdirSync.callCount).to.equal(3);
 
-      expect(stubbedFs.rmdirSync.getCall(0).args[0]).to.equal(dataFolderPath);
-      expect(stubbedFs.rmdirSync.getCall(1).args[0]).to.equal(logsFolderPath);
-      expect(stubbedFs.rmdirSync.getCall(2).args[0]).to.equal(dbFolderPath);
+      expect(stubbedFs.mkdirSync.getCall(0).args[0]).to.equal(dataFolderPath);
+      expect(stubbedFs.mkdirSync.getCall(1).args[0]).to.equal(logsFolderPath);
+      expect(stubbedFs.mkdirSync.getCall(2).args[0]).to.equal(dbFolderPath);
     });
 
     it('should unset environment variables', () => {
